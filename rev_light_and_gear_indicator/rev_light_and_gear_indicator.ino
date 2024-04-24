@@ -20,7 +20,15 @@
 #define RPM_LOW 2500
 
 // Shift Flashing Warning threshold RPM
-#define RPM_FLASH_THRESHOLD 6200
+#define RPM_FLASH_THRESHOLD 6000
+
+// Gear Ratios
+#define GEAR_1 200
+#define GEAR_2 120
+#define GEAR_3 85
+#define GEAR_4 64
+#define GEAR_5 52
+#define TOLERANCE_PERCENT 10
 
 #define LED_PIN     5
 #define NUM_LEDS    11
@@ -47,6 +55,9 @@ volatile boolean flashing_on;
 volatile int cruise_count = 0;
 volatile int rpm = 0;
 volatile float speedo = 0.0;
+volatile int gear = 0;
+volatile int gear_update_counter = 0;
+volatile int last_suggested_gear = 0;
 // Rev Light Portion
 //-------------------------End----------------------------------
 
@@ -126,26 +137,40 @@ void loop() {
   if (new_freq_a > 0){
     update_rpm(new_freq_a);
   }
-  display_gear(4, rpm);
   float new_freq_b = update_input_b();
   if (new_freq_b > 0){
-    speedo = new_freq_b/(4000.0/3600.0)*1/1;
+    update_speedo(new_freq_b);
   }
-  float ratio = rpm/speedo;
+
+  int suggested_gear = calculate_gear();
+  if (suggested_gear == last_suggested_gear){
+    gear_update_counter++;
+  } else {
+    gear_update_counter = 0;
+  }
+  last_suggested_gear = suggested_gear;
+  if (gear_update_counter >= 1){
+    gear = suggested_gear;
+    gear_update_counter = 0;
+  }
+  display_gear(gear, rpm);
   Serial.print("RPM:");
   Serial.print(rpm);
   Serial.print(",");
   Serial.print("Speedo:");
   Serial.print(speedo);
   Serial.print(",");
-  Serial.print("ratio:");
-  Serial.print(ratio);
+  Serial.print("sug_gear:");
+  Serial.print(suggested_gear);
+  Serial.print(",");
+  Serial.print("gear:");
+  Serial.print(gear);
   Serial.print(",     ");
-  Serial.print ("Frequency a: ");
+  Serial.print ("Frequency_a:");
   Serial.print (new_freq_a);
   Serial.print(",");
-  Serial.print (" Frequency b: ");
-  Serial.println (new_freq_b);
+  Serial.print ("Frequency_b:");
+  Serial.print (new_freq_b);
   int value = analogRead(A0);
   int suggested_brightness = max(0,map(value, 800, 300, 15, 0));
   suggested_brightness = min(15,((suggested_brightness % 2) + suggested_brightness));
@@ -159,9 +184,9 @@ void loop() {
     brightness = suggested_brightness;
     brightness_counter = 0;
   }
-  Serial.print (" seg_brightness: ");
+  Serial.print (",seg_brightness:");
   Serial.print(suggested_brightness);
-  Serial.print (" actual_brightness: ");
+  Serial.print (",actual_brightness:");
   Serial.println(brightness);
 
 }

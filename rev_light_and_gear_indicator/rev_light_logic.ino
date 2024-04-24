@@ -6,6 +6,13 @@ void update_rpm(float n_freq){
   }
 }
 
+void update_speedo(float n_freq){
+  float new_spd = n_freq/(4000.0/3600.0)*1.0/1.0;
+  if (new_spd < 140){
+    speedo = new_spd;
+  }
+}
+
 void update_rev_light(float n_freq){
   if (n_freq >= 0){
     int new_rpm = n_freq*RPM_PER_HZ/50;

@@ -81,7 +81,7 @@ void prepareForInterrupts_input_b ()
   EIFR = bit (INTF1);  // clear flag for interrupt 1
   first_input_b = true;
   triggered_input_b = false;  // re-arm for next time
-  attachInterrupt(digitalPinToInterrupt(input_b_pin), isr_input_b, RISING);     
+  attachInterrupt(digitalPinToInterrupt(input_b_pin), isr_input_b, FALLING);     
   }  // end of prepareForInterrupts_input_b
 
 float update_input_a(){
