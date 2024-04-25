@@ -1,4 +1,4 @@
-#include <FastLED.h>
+
 #include "LedControl.h"
 #include "binary.h"
 
@@ -7,20 +7,25 @@
 
 //-------------------------Start--------------------------------
 // Rev Light Portion
+
+#define SPEEDO_PIN 2
+#define RPM_PIN 3
 // RPM per Hz
 #define RPM_PER_HZ 30
 
-// Cruise Mode threshold time in ms
+// Cruise Mode threshold time in loop count
 #define CRUISE_THRESHOLD 10000
 // Cruise Mode limit RPMs
 #define CRUISE_LOW 3000
 #define CRUISE_HIGH 5000
+volatile int cruise_count = 0;
 
 // RPM bar limit RPMs
 #define RPM_LOW 2500
 
 // Shift Flashing Warning threshold RPM
 #define RPM_FLASH_THRESHOLD 6000
+volatile boolean flashing_on;
 
 // Gear Ratios
 #define GEAR_1 200
@@ -30,29 +35,11 @@
 #define GEAR_5 52
 #define TOLERANCE_PERCENT 10
 
-#define LED_PIN     5
-#define NUM_LEDS    11
-#define BRIGHTNESS  255
-#define LED_TYPE    WS2812B
-#define COLOR_ORDER GRB
-CRGB leds[NUM_LEDS];
-
-CRGB black  = CRGB::Black;
-CRGB red  = CRGB::Red;
-CRGB green  = CRGB::Green;
-CRGB blue  = CRGB::Blue;
-
-CRGB shift_pattern[] = {blue, blue, blue, red, red, red, red, green, green, green};
-CRGBPalette16 shift_palette(
-  blue, blue, blue, blue, blue,
-  red, red, red, red, red, red,
-  green, green, green, green, green
-);
+// Ambient Light Sensor
+#define LIGHT_SENSOR_PIN A0
 
 
 volatile unsigned long overflowCount;
-volatile boolean flashing_on;
-volatile int cruise_count = 0;
 volatile int rpm = 0;
 volatile float speedo = 0.0;
 volatile int gear = 0;
@@ -83,20 +70,6 @@ void setup() {
   Serial.println("Rev Light & Gear Indicator");
 
   delay( 2000 ); // power-up safety delay
-  
-  //-------------------------Start----------------------------
-  // Rev Light LED Setup
-  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness(  BRIGHTNESS );
-  
-  blank_led();
-  FastLED.show();
-  flashing_on = false;
-  start_up_sweep();
-  blank_led();
-  FastLED.show();
-  // Rev Light LED Setup
-  //-------------------------End------------------------------
 
   //-------------------------Start----------------------------
   // Freq Counters Setup
@@ -120,13 +93,14 @@ void setup() {
   //-------------------------Start----------------------------
   // Matrix Display Setup
   setup_matrix_display();
+  start_up_sequence();
   // Matrix Display Setup
   //-------------------------End------------------------------
 
   
   //-------------------------Start----------------------------
   // Light Sensing Setup
-  pinMode(A0, INPUT);
+  pinMode(LIGHT_SENSOR_PIN, INPUT);
   // Light Sensing Setup
   //-------------------------End------------------------------
 
@@ -153,30 +127,33 @@ void loop() {
     gear = suggested_gear;
     gear_update_counter = 0;
   }
-  display_gear(gear, rpm);
-//  Serial.print("RPM:");
-//  Serial.print(rpm);
-//  Serial.print(",");
-//  Serial.print("Speedo:");
-//  Serial.print(speedo);
-//  Serial.print(",");
-//  Serial.print("sug_gear:");
-//  Serial.print(suggested_gear);
-//  Serial.print(",");
-//  Serial.print("gear:");
-//  Serial.print(gear);
-//  Serial.print(",     ");
-//if (new_freq_a > 0){
-//  Serial.print ("Frequency_a:");
-//
-//  Serial.print (new_freq_a);
-//  Serial.print ("Frequency_b:");
-//  Serial.println (new_freq_b);
-//}
-//  Serial.print(",");
-//  Serial.print ("Frequency_b:");
-//  Serial.print (new_freq_b);
-  int value = analogRead(A0);
+  
+  //-------------------------Start----------------------------
+  // Cruise Mode logic
+  if ((rpm >= CRUISE_LOW) && (rpm <= CRUISE_HIGH)){
+    cruise_count += 1;
+  } else {
+    cruise_count -= 1;
+    if ((rpm > CRUISE_HIGH) || (cruise_count < 0) || (cruise_count < CRUISE_THRESHOLD)){
+      cruise_count = 0;
+    }
+  }
+
+  if (cruise_count >= CRUISE_THRESHOLD) {
+    if (cruise_count >= CRUISE_THRESHOLD/3.0*4) {
+      cruise_count = CRUISE_THRESHOLD/3.0*4;
+    }
+    blank_display();
+  } else {
+    // Finally Display Gear
+    display_gear(gear, rpm);
+  }
+  // Cruise Mode Logic
+  //-------------------------End------------------------------
+
+  //-------------------------Start----------------------------
+  // Light Sensing Logic
+  int value = analogRead(LIGHT_SENSOR_PIN);
   int suggested_brightness = max(0,map(value, 800, 300, 15, 0));
   suggested_brightness = min(15,((suggested_brightness % 2) + suggested_brightness));
   if (suggested_brightness != brightness){
@@ -189,6 +166,30 @@ void loop() {
     brightness = suggested_brightness;
     brightness_counter = 0;
   }
+  // Light Sensing Logic
+  //-------------------------End------------------------------
+  
+//  Serial.print("RPM:");
+//  Serial.print(rpm);
+//  Serial.print(",");
+//  Serial.print("Speedo:");
+//  Serial.print(speedo);
+//  Serial.print(",");
+  Serial.print("sug_gear:");
+  Serial.print(suggested_gear);
+  Serial.print(",");
+  Serial.print("gear:");
+  Serial.println(gear);
+//  Serial.print(",     ");
+//  if (new_freq_a > 0){
+//    Serial.print ("Frequency_a:");
+//    Serial.print (new_freq_a);
+//    Serial.print (",Frequency_b:");
+//    Serial.println (new_freq_b);
+//  }
+//  Serial.print(",");
+//  Serial.print ("Frequency_b:");
+//  Serial.print (new_freq_b);
 //  Serial.print (",seg_brightness:");
 //  Serial.print(suggested_brightness);
 //  Serial.print (",actual_brightness:");

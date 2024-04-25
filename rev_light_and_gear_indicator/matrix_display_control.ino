@@ -96,6 +96,14 @@ void setup_matrix_display(){
   lc.clearDisplay(0);
 }
 
+void start_up_sequence(){
+  for (int i=0; i<=7; i++){
+    lc.setColumn(0,i,B11111111);
+    delay(100);
+    lc.setColumn(0,i,B00000000);
+  }
+}
+
 void update_display(byte image[]){
   //rotated 90 degrees
   for (int i=0; i<=7; i++){
@@ -106,6 +114,12 @@ void update_display(byte image[]){
 void fill_display(){
   for (int i=0; i<=7; i++){
     lc.setRow(0,i,B11111111);
+  }
+}
+
+void blank_display(){
+  for (int i=0; i<=7; i++){
+    lc.setRow(0,i,B00000000);
   }
 }
 

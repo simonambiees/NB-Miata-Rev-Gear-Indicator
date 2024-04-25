@@ -6,8 +6,8 @@
 
 // Rev Input: pin D2
 // Speedo Input: pin D3
-#define input_a_pin 2
-#define input_b_pin 3
+#define input_a_pin SPEEDO_PIN
+#define input_b_pin RPM_PIN
 
 volatile boolean first_input_a;
 volatile boolean triggered_input_a;
