@@ -135,11 +135,11 @@ void setup() {
 void loop() {
   float new_freq_a = update_input_a();
   if (new_freq_a > 0){
-    update_rpm(new_freq_a);
+    update_speedo(new_freq_a);
   }
   float new_freq_b = update_input_b();
   if (new_freq_b > 0){
-    update_speedo(new_freq_b);
+    update_rpm(new_freq_b);
   }
 
   int suggested_gear = calculate_gear();
@@ -149,28 +149,33 @@ void loop() {
     gear_update_counter = 0;
   }
   last_suggested_gear = suggested_gear;
-  if (gear_update_counter >= 1){
+  if (gear_update_counter >= 5){
     gear = suggested_gear;
     gear_update_counter = 0;
   }
   display_gear(gear, rpm);
-  Serial.print("RPM:");
-  Serial.print(rpm);
-  Serial.print(",");
-  Serial.print("Speedo:");
-  Serial.print(speedo);
-  Serial.print(",");
-  Serial.print("sug_gear:");
-  Serial.print(suggested_gear);
-  Serial.print(",");
-  Serial.print("gear:");
-  Serial.print(gear);
-  Serial.print(",     ");
-  Serial.print ("Frequency_a:");
-  Serial.print (new_freq_a);
-  Serial.print(",");
-  Serial.print ("Frequency_b:");
-  Serial.print (new_freq_b);
+//  Serial.print("RPM:");
+//  Serial.print(rpm);
+//  Serial.print(",");
+//  Serial.print("Speedo:");
+//  Serial.print(speedo);
+//  Serial.print(",");
+//  Serial.print("sug_gear:");
+//  Serial.print(suggested_gear);
+//  Serial.print(",");
+//  Serial.print("gear:");
+//  Serial.print(gear);
+//  Serial.print(",     ");
+//if (new_freq_a > 0){
+//  Serial.print ("Frequency_a:");
+//
+//  Serial.print (new_freq_a);
+//  Serial.print ("Frequency_b:");
+//  Serial.println (new_freq_b);
+//}
+//  Serial.print(",");
+//  Serial.print ("Frequency_b:");
+//  Serial.print (new_freq_b);
   int value = analogRead(A0);
   int suggested_brightness = max(0,map(value, 800, 300, 15, 0));
   suggested_brightness = min(15,((suggested_brightness % 2) + suggested_brightness));
@@ -184,9 +189,9 @@ void loop() {
     brightness = suggested_brightness;
     brightness_counter = 0;
   }
-  Serial.print (",seg_brightness:");
-  Serial.print(suggested_brightness);
-  Serial.print (",actual_brightness:");
-  Serial.println(brightness);
+//  Serial.print (",seg_brightness:");
+//  Serial.print(suggested_brightness);
+//  Serial.print (",actual_brightness:");
+//  Serial.println(brightness);
 
 }

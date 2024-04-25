@@ -7,9 +7,9 @@ void update_rpm(float n_freq){
 }
 
 void update_speedo(float n_freq){
-  float new_spd = n_freq/(4000.0/3600.0)*1.0/1.0;
-  if (new_spd < 140){
-    speedo = new_spd;
+  float new_spd_x2 = n_freq/(4000.0/3600.0)*1.0/1.0;
+  if (abs(new_spd_x2 - speedo*2.0) < 6){
+    speedo = new_spd_x2/2.0;
   }
 }
 
