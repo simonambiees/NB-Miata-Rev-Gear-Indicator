@@ -94,7 +94,7 @@ float update_input_a(){
 //    Serial.print (freq_input_a);
 //    Serial.print (" Hz.   ");
     // so we can read it  
-    delay (50);
+//    delay (50);
     prepareForInterrupts_input_a ();
     return freq_input_a; 
   }
@@ -111,7 +111,7 @@ float update_input_b(){
 //    Serial.print (freq_input_b);
 //    Serial.print (" Hz.");
     // so we can read it  
-    delay (50);
+//    delay (50);
     prepareForInterrupts_input_b ();
     return freq_input_b;
   }

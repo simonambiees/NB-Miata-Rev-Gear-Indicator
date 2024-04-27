@@ -36,7 +36,7 @@ volatile boolean flashing_on;
 #define TOLERANCE_PERCENT 10
 
 // Ambient Light Sensor
-#define LIGHT_SENSOR_PIN A0
+#define LIGHT_SENSOR_PIN A7
 
 
 volatile unsigned long overflowCount;
@@ -123,7 +123,7 @@ void loop() {
     gear_update_counter = 0;
   }
   last_suggested_gear = suggested_gear;
-  if (gear_update_counter >= 5){
+  if (gear_update_counter >= 3){
     gear = suggested_gear;
     gear_update_counter = 0;
   }
@@ -146,7 +146,7 @@ void loop() {
     blank_display();
   } else {
     // Finally Display Gear
-    display_gear(gear, rpm);
+    display_gear(0, rpm);
   }
   // Cruise Mode Logic
   //-------------------------End------------------------------
@@ -169,24 +169,22 @@ void loop() {
   // Light Sensing Logic
   //-------------------------End------------------------------
   
-//  Serial.print("RPM:");
-//  Serial.print(rpm);
-//  Serial.print(",");
-//  Serial.print("Speedo:");
-//  Serial.print(speedo);
-//  Serial.print(",");
+  Serial.print("Speedo:");
+  Serial.print(speedo);
+  Serial.print(",");
+  Serial.print ("Frequency_a:");
+  Serial.print (new_freq_a);
+  Serial.print(",");
+  Serial.print("RPM:");
+  Serial.print(rpm);
+  Serial.print (",Frequency_b:");
+  Serial.print (new_freq_b);
+  Serial.print(",");
   Serial.print("sug_gear:");
   Serial.print(suggested_gear);
   Serial.print(",");
   Serial.print("gear:");
   Serial.println(gear);
-//  Serial.print(",     ");
-//  if (new_freq_a > 0){
-//    Serial.print ("Frequency_a:");
-//    Serial.print (new_freq_a);
-//    Serial.print (",Frequency_b:");
-//    Serial.println (new_freq_b);
-//  }
 //  Serial.print(",");
 //  Serial.print ("Frequency_b:");
 //  Serial.print (new_freq_b);
@@ -194,5 +192,6 @@ void loop() {
 //  Serial.print(suggested_brightness);
 //  Serial.print (",actual_brightness:");
 //  Serial.println(brightness);
+  delay(100);
 
 }

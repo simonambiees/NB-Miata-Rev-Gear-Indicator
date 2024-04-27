@@ -69,9 +69,9 @@ byte gears[7][8] = {
 }};
 
 int calculate_gear(){
-  if (speedo < 15){
-    return 0;
-  }
+//  if (speedo < 15){
+//    return 0;
+//  }
   float ratio = rpm/speedo;
   if (ratio >= GEAR_1*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_1*(100.0+TOLERANCE_PERCENT)/100.0){
     return 1;
