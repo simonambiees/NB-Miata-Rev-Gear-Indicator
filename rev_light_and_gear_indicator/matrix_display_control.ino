@@ -16,7 +16,7 @@ byte gears[7][8] = {
   B00000000,
   B00011000,
   B00011000,
-  B00011100,
+  B00111000,
   B00011000,
   B00011000,
   B00011000,
@@ -25,48 +25,128 @@ byte gears[7][8] = {
   B00000000,
   B00111100,
   B01100110,
-  B01100000,
-  B00110000,
+  B00000110,
   B00001100,
-  B00000110,
+  B00110000,
+  B01100000,
   B01111110
 },{
   B00000000,
   B00111100,
   B01100110,
-  B01100000,
-  B00111000,
-  B01100000,
-  B01100110,
-  B00111100
-},{
-  B00000000,
-  B00110000,
-  B00111000,
-  B00110100,
-  B01100100,
-  B01111110,
-  B00110000,
-  B00110000
-},{
-  B00000000,
-  B01111110,
   B00000110,
-  B00111110,
-  B01100000,
-  B01100000,
+  B00011100,
+  B00000110,
   B01100110,
   B00111100
 },{
   B00000000,
-  B00111110,
+  B00001100,
+  B00011100,
+  B00101100,
+  B01001100,
+  B01111110,
+  B00001100,
+  B00001100
+},{
+  B00000000,
+  B01111110,
+  B01100000,
+  B01111100,
+  B00000110,
+  B00000110,
+  B01100110,
+  B00111100
+},{
+  B00000000,
+  B01111100,
   B01100110,
   B01100110,
-  B00111110,
-  B00011110,
+  B01111100,
+  B01111000,
   B01101100,
   B01100110
 }};
+
+byte revs[6][8] = {
+{
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000
+},{
+  B11111111,
+  B10000001,
+  B10000001,
+  B10000001,
+  B10000001,
+  B10000001,
+  B10000001,
+  B11111111
+},{
+  B11111111,
+  B11111111,
+  B11000011,
+  B11000011,
+  B11000011,
+  B11000011,
+  B11111111,
+  B11111111
+},{
+  B11111111,
+  B11111111,
+  B11111111,
+  B11100111,
+  B11100111,
+  B11111111,
+  B11111111,
+  B11111111
+},{
+  B11111111,
+  B11111111,
+  B11111111,
+  B11111111,
+  B11111111,
+  B11111111,
+  B11111111,
+  B11111111
+},{
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000,
+  B00000000
+}};
+
+int calculate_rev_stage(){
+  int rev_stage = min(5,max(0, map(rpm, RPM_FLASH_THRESHOLD, RPM_LOW, 5, 1)));
+  return rev_stage;
+}
+
+void display_rpm(int rev_stage){
+  lc.setIntensity(0,brightness);
+  if (rpm > RPM_FLASH_THRESHOLD){
+    if (flashing_on){
+      update_display(revs[rev_stage]);
+    } else {
+      fill_display();
+    }
+    if (flashing_on == true) {
+      flashing_on = false;
+    } else {
+      flashing_on = true;
+    }
+  } else {
+    update_display(revs[rev_stage]);
+  }
+}
 
 int calculate_gear(){
 //  if (speedo < 15){
@@ -90,17 +170,17 @@ int calculate_gear(){
 
 void setup_matrix_display(){
   lc.shutdown(0,false);
-  // Set brightness to a medium value
-  lc.setIntensity(0,brightness);
   // Clear the display
   lc.clearDisplay(0);
+  // Set brightness to a medium value
+  lc.setIntensity(0,brightness);
 }
 
 void start_up_sequence(){
-  for (int i=0; i<=7; i++){
-    lc.setColumn(0,i,B11111111);
+  for (int i=0; i<=3; i++){
+    update_display(revs[i]);
     delay(500);
-    lc.setColumn(0,i,B00000000);
+    blank_display();
   }
 }
 

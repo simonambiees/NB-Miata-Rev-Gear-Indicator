@@ -24,7 +24,7 @@ volatile int cruise_count = 0;
 #define RPM_LOW 2500
 
 // Shift Flashing Warning threshold RPM
-#define RPM_FLASH_THRESHOLD 6000
+#define RPM_FLASH_THRESHOLD 4000
 volatile boolean flashing_on;
 
 // Gear Ratios
@@ -127,6 +127,8 @@ void loop() {
     gear = suggested_gear;
     gear_update_counter = 0;
   }
+
+  int rpm_stage = calculate_rev_stage();
   
   //-------------------------Start----------------------------
   // Cruise Mode logic
@@ -146,7 +148,7 @@ void loop() {
     blank_display();
   } else {
     // Finally Display Gear
-    display_gear(0, rpm);
+    display_rpm(rpm_stage);
   }
   // Cruise Mode Logic
   //-------------------------End------------------------------
@@ -169,22 +171,24 @@ void loop() {
   // Light Sensing Logic
   //-------------------------End------------------------------
   
-  Serial.print("Speedo:");
-  Serial.print(speedo);
-  Serial.print(",");
-  Serial.print ("Frequency_a:");
-  Serial.print (new_freq_a);
-  Serial.print(",");
+//  Serial.print("Speedo:");
+//  Serial.print(speedo);
+//  Serial.print(",");
+//  Serial.print ("Frequency_a:");
+//  Serial.print (new_freq_a);
+//  Serial.print(",");
   Serial.print("RPM:");
   Serial.print(rpm);
   Serial.print (",Frequency_b:");
   Serial.print (new_freq_b);
   Serial.print(",");
-  Serial.print("sug_gear:");
-  Serial.print(suggested_gear);
-  Serial.print(",");
-  Serial.print("gear:");
-  Serial.println(gear);
+  Serial.print("light_stage:");
+  Serial.println(rpm_stage);
+//  Serial.print("sug_gear:");
+//  Serial.print(suggested_gear);
+//  Serial.print(",");
+//  Serial.print("gear:");
+//  Serial.println(gear);
 //  Serial.print(",");
 //  Serial.print ("Frequency_b:");
 //  Serial.print (new_freq_b);
@@ -192,6 +196,6 @@ void loop() {
 //  Serial.print(suggested_brightness);
 //  Serial.print (",actual_brightness:");
 //  Serial.println(brightness);
-  delay(100);
+  delay(20);
 
 }
