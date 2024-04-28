@@ -14,17 +14,17 @@
 #define RPM_PER_HZ 30
 
 // Cruise Mode threshold time in loop count
-#define CRUISE_THRESHOLD 10000
+#define CRUISE_THRESHOLD 350
 // Cruise Mode limit RPMs
 #define CRUISE_LOW 3000
 #define CRUISE_HIGH 5000
 volatile int cruise_count = 0;
 
 // RPM bar limit RPMs
-#define RPM_LOW 2500
+#define RPM_LOW 3500
 
 // Shift Flashing Warning threshold RPM
-#define RPM_FLASH_THRESHOLD 4000
+#define RPM_FLASH_THRESHOLD 5800
 volatile boolean flashing_on;
 
 // Gear Ratios
@@ -181,6 +181,8 @@ void loop() {
   Serial.print(rpm);
   Serial.print (",Frequency_b:");
   Serial.print (new_freq_b);
+  Serial.print (",cruise:");
+  Serial.print (cruise_count);
   Serial.print(",");
   Serial.print("light_stage:");
   Serial.println(rpm_stage);

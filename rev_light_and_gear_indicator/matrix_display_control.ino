@@ -126,7 +126,10 @@ byte revs[6][8] = {
 }};
 
 int calculate_rev_stage(){
-  int rev_stage = min(5,max(0, map(rpm, RPM_FLASH_THRESHOLD, RPM_LOW, 5, 1)));
+  int rev_stage = min(5,max(0, map(rpm, RPM_FLASH_THRESHOLD, RPM_LOW, 4, 1)));
+  if (rpm > RPM_FLASH_THRESHOLD){
+    rev_stage = 5;
+  }
   return rev_stage;
 }
 
