@@ -151,25 +151,25 @@ void display_rpm(int rev_stage){
   }
 }
 
-int calculate_gear(){
-//  if (speedo < 15){
+//int calculate_gear(){
+////  if (speedo < 15){
+////    return 0;
+////  }
+//  float ratio = rpm/speedo;
+//  if (ratio >= GEAR_1*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_1*(100.0+TOLERANCE_PERCENT)/100.0){
+//    return 1;
+//  } else if (ratio >= GEAR_2*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_2*(100.0+TOLERANCE_PERCENT)/100.0){
+//    return 2;
+//  } else if (ratio >= GEAR_3*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_3*(100.0+TOLERANCE_PERCENT)/100.0){
+//    return 3;
+//  } else if (ratio >= GEAR_4*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_4*(100.0+TOLERANCE_PERCENT)/100.0){
+//    return 4;
+//  } else if (ratio >= GEAR_5*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_5*(100.0+TOLERANCE_PERCENT)/100.0){
+//    return 5;
+//  } else {
 //    return 0;
 //  }
-  float ratio = rpm/speedo;
-  if (ratio >= GEAR_1*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_1*(100.0+TOLERANCE_PERCENT)/100.0){
-    return 1;
-  } else if (ratio >= GEAR_2*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_2*(100.0+TOLERANCE_PERCENT)/100.0){
-    return 2;
-  } else if (ratio >= GEAR_3*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_3*(100.0+TOLERANCE_PERCENT)/100.0){
-    return 3;
-  } else if (ratio >= GEAR_4*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_4*(100.0+TOLERANCE_PERCENT)/100.0){
-    return 4;
-  } else if (ratio >= GEAR_5*(100.0-TOLERANCE_PERCENT)/100.0 && ratio <= GEAR_5*(100.0+TOLERANCE_PERCENT)/100.0){
-    return 5;
-  } else {
-    return 0;
-  }
-}
+//}
 
 void setup_matrix_display(){
   lc.shutdown(0,false);
@@ -206,20 +206,20 @@ void blank_display(){
   }
 }
 
-void display_gear(int gear, int rpm){
-  lc.setIntensity(0,brightness);
-  if (rpm > RPM_FLASH_THRESHOLD){
-    if (flashing_on){
-      update_display(gears[gear]);
-    } else {
-      fill_display();
-    }
-    if (flashing_on == true) {
-      flashing_on = false;
-    } else {
-      flashing_on = true;
-    }
-  } else {
-    update_display(gears[gear]);
-  }
-}
+//void display_gear(int gear, int rpm){
+//  lc.setIntensity(0,brightness);
+//  if (rpm > RPM_FLASH_THRESHOLD){
+//    if (flashing_on){
+//      update_display(gears[gear]);
+//    } else {
+//      fill_display();
+//    }
+//    if (flashing_on == true) {
+//      flashing_on = false;
+//    } else {
+//      flashing_on = true;
+//    }
+//  } else {
+//    update_display(gears[gear]);
+//  }
+//}

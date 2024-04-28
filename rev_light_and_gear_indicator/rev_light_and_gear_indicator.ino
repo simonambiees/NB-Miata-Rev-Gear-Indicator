@@ -14,7 +14,7 @@
 #define RPM_PER_HZ 30
 
 // Cruise Mode threshold time in loop count
-#define CRUISE_THRESHOLD 250
+#define CRUISE_THRESHOLD 300
 // Cruise Mode limit RPMs
 #define CRUISE_LOW 3000
 #define CRUISE_HIGH 5000
@@ -27,24 +27,24 @@ volatile int cruise_count = 0;
 #define RPM_FLASH_THRESHOLD 5800
 volatile boolean flashing_on;
 
-// Gear Ratios
-#define GEAR_1 200
-#define GEAR_2 120
-#define GEAR_3 85
-#define GEAR_4 64
-#define GEAR_5 52
-#define TOLERANCE_PERCENT 10
+//// Gear Ratios
+//#define GEAR_1 200
+//#define GEAR_2 120
+//#define GEAR_3 85
+//#define GEAR_4 64
+//#define GEAR_5 52
+//#define TOLERANCE_PERCENT 10
 
 // Ambient Light Sensor
-#define LIGHT_SENSOR_PIN A7
+#define LIGHT_SENSOR_PIN A6
 
 
 volatile unsigned long overflowCount;
 volatile int rpm = 0;
-volatile float speedo = 0.0;
-volatile int gear = 0;
-volatile int gear_update_counter = 0;
-volatile int last_suggested_gear = 0;
+//volatile float speedo = 0.0;
+//volatile int gear = 0;
+//volatile int gear_update_counter = 0;
+//volatile int last_suggested_gear = 0;
 // Rev Light Portion
 //-------------------------End----------------------------------
 
@@ -85,7 +85,7 @@ void setup() {
   TCCR1B =  bit (CS10);  //  no prescaling
 
   // set up for interrupts
-  prepareForInterrupts_input_a();
+//  prepareForInterrupts_input_a();
   prepareForInterrupts_input_b();
   // Freq Counters Setup
   //-------------------------End------------------------------
@@ -107,26 +107,26 @@ void setup() {
 }
 
 void loop() {
-  float new_freq_a = update_input_a();
-  if (new_freq_a > 0){
-    update_speedo(new_freq_a);
-  }
+//  float new_freq_a = update_input_a();
+//  if (new_freq_a > 0){
+//    update_speedo(new_freq_a);
+//  }
   float new_freq_b = update_input_b();
   if (new_freq_b > 0){
     update_rpm(new_freq_b);
   }
 
-  int suggested_gear = calculate_gear();
-  if (suggested_gear == last_suggested_gear){
-    gear_update_counter++;
-  } else {
-    gear_update_counter = 0;
-  }
-  last_suggested_gear = suggested_gear;
-  if (gear_update_counter >= 3){
-    gear = suggested_gear;
-    gear_update_counter = 0;
-  }
+//  int suggested_gear = calculate_gear();
+//  if (suggested_gear == last_suggested_gear){
+//    gear_update_counter++;
+//  } else {
+//    gear_update_counter = 0;
+//  }
+//  last_suggested_gear = suggested_gear;
+//  if (gear_update_counter >= 3){
+//    gear = suggested_gear;
+//    gear_update_counter = 0;
+//  }
 
   int rpm_stage = calculate_rev_stage();
   
@@ -156,7 +156,7 @@ void loop() {
   //-------------------------Start----------------------------
   // Light Sensing Logic
   int value = analogRead(LIGHT_SENSOR_PIN);
-  int suggested_brightness = max(0,map(value, 800, 300, 15, 0));
+  int suggested_brightness = min(10,max(0,map(value, 800, 300, 15, 0)));
   suggested_brightness = min(15,((suggested_brightness % 2) + suggested_brightness));
   if (suggested_brightness != brightness){
     brightness_counter++;
@@ -168,6 +168,7 @@ void loop() {
     brightness = suggested_brightness;
     brightness_counter = 0;
   }
+//  brightness = 10;
   // Light Sensing Logic
   //-------------------------End------------------------------
   
@@ -177,15 +178,15 @@ void loop() {
 //  Serial.print ("Frequency_a:");
 //  Serial.print (new_freq_a);
 //  Serial.print(",");
-  Serial.print("RPM:");
-  Serial.print(rpm);
-  Serial.print (",Frequency_b:");
-  Serial.print (new_freq_b);
-  Serial.print (",cruise:");
-  Serial.print (cruise_count);
-  Serial.print(",");
-  Serial.print("light_stage:");
-  Serial.println(rpm_stage);
+//  Serial.print("RPM:");
+//  Serial.print(rpm);
+//  Serial.print (",Frequency_b:");
+//  Serial.print (new_freq_b);
+//  Serial.print (",cruise:");
+//  Serial.print (cruise_count);
+//  Serial.print(",");
+//  Serial.print("light_stage:");
+//  Serial.println(rpm_stage);
 //  Serial.print("sug_gear:");
 //  Serial.print(suggested_gear);
 //  Serial.print(",");
@@ -198,6 +199,6 @@ void loop() {
 //  Serial.print(suggested_brightness);
 //  Serial.print (",actual_brightness:");
 //  Serial.println(brightness);
-  delay(20);
+  delay(50);
 
 }
