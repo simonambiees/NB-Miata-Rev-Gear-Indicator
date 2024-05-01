@@ -1,6 +1,6 @@
 void update_rpm(float n_freq){
-  int new_rpm = n_freq*RPM_PER_HZ/10;
-  new_rpm = new_rpm*10;
+  int new_rpm = n_freq*RPM_PER_HZ/50;
+  new_rpm = new_rpm*50;
   if (abs(new_rpm - rpm) < 1000) {
     rpm = new_rpm;
   }

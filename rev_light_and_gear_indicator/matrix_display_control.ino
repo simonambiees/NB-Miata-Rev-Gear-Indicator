@@ -180,9 +180,9 @@ void setup_matrix_display(){
 }
 
 void start_up_sequence(){
-  for (int i=0; i<=3; i++){
-    update_display(revs[i]);
-    delay(500);
+  for (int i=0; i<4*2; i++){
+    update_display(revs[(i%4)+1]);
+    delay(100);
     blank_display();
   }
 }
