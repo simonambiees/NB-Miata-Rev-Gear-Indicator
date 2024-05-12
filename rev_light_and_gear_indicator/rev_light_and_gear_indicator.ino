@@ -14,14 +14,14 @@
 #define RPM_PER_HZ 30
 
 // Cruise Mode threshold time in loop count
-#define CRUISE_THRESHOLD 300
+#define CRUISE_THRESHOLD 500
 // Cruise Mode limit RPMs
 #define CRUISE_LOW 3000
 #define CRUISE_HIGH 5000
 volatile int cruise_count = 0;
 
 // RPM bar limit RPMs
-#define RPM_LOW 4000
+#define RPM_LOW 3800
 
 // Shift Flashing Warning threshold RPM
 #define RPM_FLASH_THRESHOLD 5800
@@ -156,8 +156,8 @@ void loop() {
   //-------------------------Start----------------------------
   // Light Sensing Logic
   int value = analogRead(LIGHT_SENSOR_PIN);
-  int suggested_brightness = min(10,max(0,map(value, 800, 300, 15, 0)));
-  suggested_brightness = min(15,((suggested_brightness % 2) + suggested_brightness));
+  int suggested_brightness = min(10,max(0,map(value, 950, 300, 15, 0)));
+  suggested_brightness = min(10,((suggested_brightness % 2) + suggested_brightness));
   if (suggested_brightness != brightness){
     brightness_counter++;
   } else {
@@ -199,6 +199,7 @@ void loop() {
 //  Serial.print(suggested_brightness);
 //  Serial.print (",actual_brightness:");
 //  Serial.println(brightness);
+  Serial.println(value);
   delay(50);
 
 }
