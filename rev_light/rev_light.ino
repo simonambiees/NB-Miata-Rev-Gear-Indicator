@@ -16,14 +16,18 @@
 #define RPM_LOW 2500
 
 // Shift Flashing Warning threshold RPM
-#define RPM_FLASH_THRESHOLD 5800
+#define RPM_FLASH_THRESHOLD 6000
 
-#define LED_PIN     5
-#define NUM_LEDS    11
-#define BRIGHTNESS  255
+#define LED_PIN     A5
+#define NUM_LEDS    9
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 CRGB leds[NUM_LEDS];
+
+#define LIGHT_SENSOR_PIN A4
+#define BRIGHTNESS_LOWER 128
+#define BRIGHTNESS_UPPER 255
+volatile int brightness = 0;
 
 CRGB black  = CRGB::Black;
 CRGB red  = CRGB::Red;
@@ -102,7 +106,9 @@ void red_led ()
 void start_up_sweep ()
   {
     for( int i = 0; i < NUM_LEDS; i++) {
-      leds[i] = blue;
+      // leds[i] = blue;
+      int palette_index = 220.0/(NUM_LEDS-1)*i;
+      leds[i] = ColorFromPalette(shift_palette, palette_index);
       FastLED.show();
       delay(TIME_BETWEEN_LOOPS);
     }
@@ -114,10 +120,14 @@ void setup ()
   {
   Serial.begin(115200);       
   Serial.println("Frequency Counter");
+  pinMode(LIGHT_SENSOR_PIN, INPUT);
 
   delay( 2000 ); // power-up safety delay
+
+  int value = analogRead(LIGHT_SENSOR_PIN);
+  brightness = min(BRIGHTNESS_UPPER,max(BRIGHTNESS_LOWER,map(value, 1023, 700, BRIGHTNESS_UPPER, BRIGHTNESS_LOWER)));
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness(  BRIGHTNESS );
+  FastLED.setBrightness(brightness);
   
   blank_led();
   FastLED.show();
@@ -145,6 +155,10 @@ void setup ()
 
 void loop () 
   {
+  
+  int value = analogRead(LIGHT_SENSOR_PIN);
+  brightness = min(BRIGHTNESS_UPPER,max(BRIGHTNESS_LOWER,map(value, 1023, 700, BRIGHTNESS_UPPER, BRIGHTNESS_LOWER)));
+  FastLED.setBrightness(brightness);
 
   if (!triggered)
     return;
@@ -167,7 +181,7 @@ void loop ()
 
   for( int i = 0; i < NUM_LEDS; i++) {
     if (i < n_active_lights) {
-      int palette_index = 255.0/10*i;
+      int palette_index = 220.0/(NUM_LEDS-1)*i;
       leds[i] = ColorFromPalette(shift_palette, palette_index);
     } else {
       leds[i] = black;
@@ -213,7 +227,9 @@ void loop ()
   Serial.print (" cruise: ");
   Serial.print (cruise_count);
   Serial.print (" nLED: ");
-  Serial.println (n_active_lights);
+  Serial.print (n_active_lights);
+  Serial.print (" Brightness: ");
+  Serial.println (brightness);
 
   // so we can read it  
   delay (TIME_BETWEEN_LOOPS);

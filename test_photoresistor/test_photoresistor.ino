@@ -28,6 +28,7 @@ void setup(){
 
 void loop(){
     fill_display();
+    Serial.println("haha");
 }
 
 void fill_display(){
