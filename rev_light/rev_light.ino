@@ -133,7 +133,7 @@ void setup ()
   FastLED.show();
   flashing_on = false;
   start_up_sweep();
-  // blank_led();
+  blank_led();
   FastLED.show();
   
   
