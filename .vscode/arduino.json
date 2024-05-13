@@ -1,0 +1,7 @@
+{
+    "port": "COM7",
+    "configuration": "cpu=atmega328",
+    "board": "arduino:avr:nano",
+    "programmer": "avrispmkii",
+    "sketch": "rev_light\\rev_light.ino"
+}

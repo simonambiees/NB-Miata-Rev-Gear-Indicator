@@ -25,7 +25,7 @@
 CRGB leds[NUM_LEDS];
 
 #define LIGHT_SENSOR_PIN A4
-#define BRIGHTNESS_LOWER 60
+#define BRIGHTNESS_LOWER 30
 #define BRIGHTNESS_UPPER 255
 volatile int brightness = 0;
 
@@ -36,8 +36,8 @@ CRGB blue  = CRGB::Blue;
 
 CRGB shift_pattern[] = {blue, blue, blue, red, red, red, red, green, green, green};
 CRGBPalette16 shift_palette(
-  blue, blue, blue, blue, blue,
-  red, red, red, red, red, red,
+  blue, blue, blue, blue, red,
+  red, red, red, red, green, green,
   green, green, green, green, green
 );
 
@@ -133,7 +133,7 @@ void setup ()
   FastLED.show();
   flashing_on = false;
   start_up_sweep();
-  blank_led();
+  // blank_led();
   FastLED.show();
   
   
@@ -160,8 +160,10 @@ void loop ()
   brightness = min(BRIGHTNESS_UPPER,max(BRIGHTNESS_LOWER,map(value, 1023, 700, BRIGHTNESS_UPPER, BRIGHTNESS_LOWER)));
   FastLED.setBrightness(brightness);
 
-  if (!triggered)
+  if (!triggered){
+    FastLED.show();
     return;
+  }
  
   unsigned long elapsedTime = finishTime - startTime;
   float freq = F_CPU / float (elapsedTime);  // each tick is 62.5 ns at 16 MHz
