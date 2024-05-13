@@ -18,14 +18,14 @@
 // Shift Flashing Warning threshold RPM
 #define RPM_FLASH_THRESHOLD 6000
 
-#define LED_PIN     A5
+#define LED_PIN     3
 #define NUM_LEDS    9
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 CRGB leds[NUM_LEDS];
 
 #define LIGHT_SENSOR_PIN A4
-#define BRIGHTNESS_LOWER 128
+#define BRIGHTNESS_LOWER 60
 #define BRIGHTNESS_UPPER 255
 volatile int brightness = 0;
 
